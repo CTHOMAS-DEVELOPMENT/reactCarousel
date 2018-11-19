@@ -4,4 +4,4 @@ import CarouselApp from "./components/CarouselApp";
 import "normalize.css/normalize.css";
 import "./styles/styles.scss";
 
-ReactDOM.render(<CarouselApp slides={[]} />, document.getElementById("app"));
+ReactDOM.render(<CarouselApp />, document.getElementById("app"));

@@ -6,54 +6,38 @@ import Buttons from "./Buttons";
 
 class CarouselApp extends React.Component {
   state = {
-    activeIndex: 0
-  };
-
-  goToSlide = index => {
-    this.setState({
-      activeIndex: index
-    });
+    activeIndex: 2
   };
 
   goToPrevSlide = e => {
     e.preventDefault();
 
-    let index = this.state.activeIndex;
-    let sliders = this.state.sliders;
-    let slidesLength = sliders.length;
-
-    if (index < 1) {
-      index = slidesLength;
-    }
-
-    --index;
+    console.log("this.state.sliders", this.state.sliders);
+    let pArray = this.state.sliders.slice();
+    let removedItem = pArray.pop();
+    pArray.unshift(removedItem);
 
     this.setState({
-      activeIndex: index
+      sliders: pArray
     });
   };
 
   goToNextSlide = e => {
     e.preventDefault();
 
-    let index = this.state.activeIndex;
-    let sliders = this.state.sliders;
-    let slidesLength = sliders.length - 1;
-    if (index === slidesLength) {
-      index = -1;
-    }
-
-    ++index;
+    let pArray = this.state.sliders.slice();
+    let removedItem = pArray.shift();
+    pArray.push(removedItem);
 
     this.setState({
-      activeIndex: index
+      sliders: pArray
     });
   };
   extractProjectData = inData => {
     return inData
       .filter((item, index) => index < 6)
       .map(item => {
-        item.tags = item.tags.substr(0, 30);
+        item.tags = item.tags.substr(0, 24);
         let { previewURL, tags, webformatURL } = item;
         return { previewURL, tags, webformatURL };
       });
@@ -68,7 +52,6 @@ class CarouselApp extends React.Component {
       .then(response => response.json())
       .then(data => {
         topSixDetail = this.extractProjectData(data.hits);
-console.log("topSixDetail",topSixDetail)
         this.setState({
           sliders: topSixDetail
         });
@@ -81,10 +64,15 @@ console.log("topSixDetail",topSixDetail)
     }
 
     return (
-      <div className="carousel">
-        <LeftArrow onClick={e => this.goToPrevSlide(e)} />
-
-        <ul>
+      <div>
+        <div className="flex-container">
+          <LeftArrow onClick={e => this.goToPrevSlide(e)} />
+          <Buttons
+          key={"left"}
+          direction={"left"}
+          imgName={"images/left.png"}
+          onClick={e => this.goToPrevSlide(e)}
+        />
           {sliders.map((slide, index) => (
             <Slide
               key={index}
@@ -93,24 +81,17 @@ console.log("topSixDetail",topSixDetail)
               slide={slide}
             />
           ))}
-        </ul>
-
-        <RightArrow onClick={e => this.goToNextSlide(e)} />
-
-        <div>
           <Buttons
-            key={"left"}
-            direction={"left"}
-            imgName={"images/left.png"}
-            onClick={e => this.goToPrevSlide(e)}
-          />
-          <Buttons
-            key={"right"}
-            direction={"right"}
-            imgName={"images/right.png"}
-            onClick={e => this.goToNextSlide(e)}
-          />
+          key={"right"}
+          direction={"right"}
+          imgName={"images/right.png"}
+          onClick={e => this.goToNextSlide(e)}
+        />
+          <RightArrow onClick={e => this.goToNextSlide(e)} />
         </div>
+
+
+
       </div>
     );
   }
